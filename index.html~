@@ -1,0 +1,112 @@
+<html>
+<head>
+<script src="js/lib.js" type="text/javascript"></script>
+<script>
+addEvent(window,'load',function(){
+
+	
+Data={
+	0:{"question":"Where do you reside?","option":{"Lekki":20,"Maryland":15,"Ejigbo":10,"Ajegunle":5,"None":0}},
+	1:{"question":"Which language can you speak?","option":{"Yoruba":20,"Pidgin":15,"Igbo":10}},
+	2:{"question":"Which of these food is your best?","option":{"Agege Bread":20,"Amala & Ewedu":15,"Boli & Epa":10,"Rice & Stew":5}},
+	3:{"question":"Have you enter any of these buses before?","option":{"Molue":20,"Faka":15,"Danfo":10,"Keke":5}},
+	4:{"question":"Which Market do you visit regularly?","option":{"Balogun Market":20,"Osodi Market":15,"Oyingbo Market":10,"Oto Market":5}},
+	5:{"question":"Have you visited...?","option":{"National Stadium":20,"Bar Beach":15,"Museum":10,"Computer Village":5}},
+	6:{"question":"What time do you wake up for work?","option":{"4:00 a.m":20,"5:00 a.m":15,"6:00 a.m":10,"7:00 a.m":5}},
+	7:{"question":"How many hours have you been held in traffic?","option":{"4 hours":20,"3 hours":15,"2 hours":10,"1 hour":5}},
+	8:{"question":"Which of these event have you done?","option":{"LASRRA":1,"Pay your Tax":3,"None":0,"All of the above":8}},
+	9:{"question":"Which have you participated in?","option":{"All of the above":20,"Owambe":15,"Trade Fair":10,"Eyo":5}},
+	10:{"question":"Who is 5?","option":{"option 1 has 1 point":1,"option 1 has 1.5 points":3,"option 1 has 2 points":6,"option 1 has 3 points":8}},
+	};	
+	
+   if (window.document.readyState=="complete") Quiz.set(0);
+}
+);
+
+var Quiz={i:0,points:{},
+		next:function (formObj) {
+		if (formObj["pt"].value.isEmpty()){
+		 	getElem("warning").show();
+		 	return false;
+		 }
+		if (!isDefined(Data[this.i+1])) {
+			var p=0; 
+			for (var i in this.points) {
+				if (this.points.hasOwnProperty(i)) {
+					p +=parseInt(this.points[i]);
+				}
+			}
+			getElem("quiz").hide();
+			getElem("points").innerHTML="Your total points is: "+p;
+			getElem("result").show();
+			return false;
+		}
+		this.points[this.i]=formObj["pt"].value;
+		this.i++;
+		this.set(this.i);
+		getElem("warning").hide();
+		}
+		,
+		prev:function (formObj) {
+		getElem("warning").hide();
+		if(this.i==0) return false;
+		delete this.points[this.i];
+		this.i--;
+		this.set(this.i);
+		},
+		set:function (index) {
+			getElem('qtn').innerHTML=template("<span class='badge'>%sn%</span>&nbsp;%qtn%",{"sn":index+1,"qtn":Data[index]["question"]});
+			getElem('opt').innerHTML='';	
+			for (var k in Data[index]["option"]) {
+				if (Data[index]["option"].hasOwnProperty(k)) getElem('opt').innerHTML +=template("<a href='javascript:void(0)' class='list-group-item'><label><input type='radio' name='pt' value='%pt%'/>&nbsp;%label%</label></a>",{"label":k,"pt":Data[index]["option"][k]});
+			}		
+		}
+			
+};	
+</script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>   
+<style type="text/css">
+.clear{
+clear: both;
+}
+.hide2{
+display: none;
+}
+</style> 
+</head>
+<body>
+	<div class="container">
+	<div class="clear">&nbsp;</div>
+	<div class="clear">&nbsp;</div>
+		<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+		
+	<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Quiz</h3>
+  </div>
+  
+  <div class="panel-body" id="quiz">
+<div class="alert alert-warning hide2" id="warning">Select your favourite option</div>
+<div class="well well-sm" id="qtn" data-question=""></div>   	
+<form action="javascript:void(0)" method="post">
+<div class="list-group" id='opt' data-options=""></div>
+		<div class="clear"></div>		
+		<button type="button" class="btn btn-default pull-left" onclick="Quiz.prev(this.form)">&larr; Previous</button>
+		<button type="button" class="btn btn-default pull-right" onclick="Quiz.next(this.form)">Next &rarr;</button>
+</form>
+  </div>
+<div class="panel-body hide2" id="result">
+<h2 id="points"></h2>
+</div>  
+  
+</div>		
+		</div>
+		<div class="col-md-3"></div>
+		</div>
+	
+	</div>
+
+</body>
+</html>
